@@ -1,15 +1,12 @@
-package sample
+package account
 
-import kotlinx.serialization.Serializable
+import kotlin.js.JsName
 
 typealias Money = Double
-typealias Instant = Long
 typealias Account = String
 
 fun Rub(amount: Double = 0.0): Money = amount
-fun Timestamp(ts: Long): Instant = ts
 
-@Serializable
 data class MoneyTransfer(
     val target: Account,
     val description: String,
@@ -17,7 +14,7 @@ data class MoneyTransfer(
     val ts: Instant
 )
 
-
+@JsName("balance")
 fun List<MoneyTransfer>.balance(): Money {
     var balance = Rub()
     forEach {
@@ -26,5 +23,10 @@ fun List<MoneyTransfer>.balance(): Money {
     return balance
 }
 
+@JsName("balanceByAccount")
 fun List<MoneyTransfer>.balanceByAccount(): Map<Account, Money> =
     groupBy { it.target }.mapValues { it.value.balance() }
+
+@JsName("byMonth")
+fun List<MoneyTransfer>.byMonth(zoneId: ZoneId): Map<YearMonth, List<MoneyTransfer>> =
+    groupBy { it.ts.toLocalDate(zoneId).yearMonth }

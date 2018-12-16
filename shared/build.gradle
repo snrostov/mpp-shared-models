@@ -47,10 +47,8 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-                implementation "io.ktor:ktor-server-jetty:$ktor_version"
-                implementation "io.ktor:ktor-html-builder:$ktor_version"
-                implementation "ch.qos.logback:logback-classic:$logback_version"
                 implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.9.0"
+                implementation 'org.joda:joda-money:1.0.1'
             }
         }
         jvmTest {
@@ -62,7 +60,6 @@ kotlin {
         jsMain {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
-                implementation "org.jetbrains:kotlin-react-dom:16.4.1-pre.33-kotlin-1.2.50"
                 implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.9.0"
             }
         }
@@ -89,7 +86,13 @@ task populateWebFolder(dependsOn: [jsMainClasses]) {
             }
             into testLib
         }
+        copy {
+            from "package.json"
+            into "../npm/packages/shared"
+        }
+        copy {
+            from jsCompilations.main.output
+            into "../npm/packages/shared"
+        }
     }
 }
-
-tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn populateWebFolder

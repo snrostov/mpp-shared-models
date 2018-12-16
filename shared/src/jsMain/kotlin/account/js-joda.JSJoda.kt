@@ -1,5 +1,5 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS", "EXTERNAL_DELEGATION", "NESTED_CLASS_IN_EXTERNAL_INTERFACE")
-@file:JsQualifier("JSJoda")
+@file:JsModule("js-joda")
 package JSJoda
 
 import kotlin.js.*
@@ -802,7 +802,7 @@ external open class YearMonth : Temporal {
         fun now(): YearMonth = definedExternally
     }
 }
-external open class ZoneId {
+external abstract class ZoneId {
     override fun equals(other: Any?): Boolean = definedExternally
     override fun hashCode(): Number = definedExternally
     open fun normalized(): ZoneId = definedExternally
