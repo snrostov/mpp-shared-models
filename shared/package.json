@@ -10,5 +10,6 @@
   "files": [
     "/shared/build/classes/kotlin/js/main/shared.*"
   ],
-  "version": "0.0.4"
+  "main": "shared.js",
+  "version": "0.0.5"
 }
