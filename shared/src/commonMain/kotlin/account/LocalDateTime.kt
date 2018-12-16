@@ -1,9 +1,7 @@
 package account
 
-import kotlinx.serialization.Decoder
-import kotlinx.serialization.Encoder
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializer
+import kotlinx.serialization.*
+import kotlinx.serialization.internal.StringDescriptor
 
 expect fun LocalDateTime(text: String): LocalDateTime
 
@@ -16,8 +14,10 @@ expect class YearMonth {
     val monthValue: Int
 }
 
-@Serializer(LocalDateTime::class)
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
+    override val descriptor: SerialDescriptor
+        get() = StringDescriptor
+
     override fun serialize(output: Encoder, obj: LocalDateTime) {
         output.encodeString(obj.toString())
     }

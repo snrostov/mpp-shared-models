@@ -30,10 +30,17 @@ class AccountTests {
         assertEquals("2018-12: [salary]; 2018-12: [food]; 2018-12: [travel]; 2018-12: [salary]", byMonth)
     }
 
+    @Test
+    fun test3() {
+        testData().forEach {
+            println(it.toJson())
+        }
+    }
+
     private fun testData(): List<Transfer> = listOf(
         Transfer(LocalDateTime("2018-12-20T09:42"), employer, "salary", 10000),
         Transfer(LocalDateTime("2018-12-20T10:00"), shop, "food", -700),
-        Transfer(LocalDateTime("2018-12-21T09:42"), taxi, "travel", -300),
-        Transfer(LocalDateTime("2018-12-22T09:42"), shop, "salary", -600)
+        Transfer(LocalDateTime("2018-01-21T09:42"), taxi, "travel", -300),
+        Transfer(LocalDateTime("2018-02-22T09:42"), shop, "salary", -600)
     )
 }

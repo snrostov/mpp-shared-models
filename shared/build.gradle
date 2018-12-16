@@ -71,28 +71,39 @@ kotlin {
     }
 }
 
-def testLib = new File(project.buildDir, "../node_modules")
 def jsCompilations = kotlin.targets.js.compilations
+def npmSharedPackage = "../npm/packages/shared"
 
-task populateWebFolder(dependsOn: [jsMainClasses]) {
+task makeNpmHappy(dependsOn: [jsMainClasses]) {
     doLast {
+        // for running tests
         copy {
             from jsCompilations.main.output
-            from kotlin.sourceSets.jsMain.resources.srcDirs
             jsCompilations.test.runtimeDependencyFiles.each {
                 if (it.exists() && !it.isDirectory()) {
-                    from zipTree(it.absolutePath).matching { include '*.js' }
+                    from zipTree(it.absolutePath)
                 }
             }
-            into testLib
+            include '*.js'
+            into 'node_modules'
         }
+
+        copy {
+            jsCompilations.main.runtimeDependencyFiles.each {
+                if (it.exists() && !it.isDirectory()) {
+                    from zipTree(it.absolutePath)
+                }
+            }
+            include '*.js'
+            into "$npmSharedPackage/node_modules"
+        }
+
         copy {
             from "package.json"
-            into "../npm/packages/shared"
-        }
-        copy {
             from jsCompilations.main.output
-            into "../npm/packages/shared"
+            into npmSharedPackage
         }
     }
 }
+
+assemble.dependsOn(makeNpmHappy)
