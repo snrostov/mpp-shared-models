@@ -31,7 +31,13 @@ class App extends Component {
     test() {
         let date = LocalDate.parse("2017-12-20").atStartOfDay(ZoneId.of("GMT+4")).toInstant();
 
-        alert(new account.MoneyTransfer('employee', "salary", 1000.0, date))
+        let list = account.transfers([
+            new account.MoneyTransfer('employee1', "salary", 1000.0, date),
+            new account.MoneyTransfer('employee1', "salary", 1000.0, date),
+            new account.MoneyTransfer('employee3', "salary", 1000.0, date)
+        ]);
+
+        alert(account.balanceByAccount(list))
     }
 }
 

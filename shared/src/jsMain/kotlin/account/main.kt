@@ -1,3 +1,4 @@
 package account
 
-fun transfers(array: Array<MoneyTransfer>) = array.toList()
+@JsName("transfers")
+fun transfers(array: Array<Transfer>) = array.toList()

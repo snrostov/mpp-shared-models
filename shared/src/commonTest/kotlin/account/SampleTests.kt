@@ -4,8 +4,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class AccountTests {
-    val zoneId = zoneIdOf("GMT+4")
-
     val employer = "employer"
     val shop = "shop"
     val taxi = "taxi"
@@ -14,33 +12,28 @@ class AccountTests {
     fun testMe() {
         val transfers = testData()
 
-        assertEquals(Rub(48300.0), transfers.balance())
+        assertEquals(8400, transfers.balance())
 
         val balanceByAccount = transfers.balanceByAccount()
-        assertEquals(Rub(-1400.0), balanceByAccount[shop])
-        assertEquals(Rub(-300.0), balanceByAccount[taxi])
+        assertEquals(-1300, balanceByAccount[shop])
+        assertEquals(-300, balanceByAccount[taxi])
     }
 
     @Test
     fun testMe2() {
         val transfers = testData()
 
-        val byMonth = transfers.byMonth(zoneId).map { (month, items) ->
+        val byMonth = transfers.byMonth().map { (month, items) ->
             "${month.year}-${month.monthValue}: ${items.map { it.description }}"
         }.joinToString("; ")
 
-        assertEquals("2018-1: [salary, food]; 2018-2: [travel, food]", byMonth)
+        assertEquals("2018-12: [salary]; 2018-12: [food]; 2018-12: [travel]; 2018-12: [salary]", byMonth)
     }
 
-    private fun testData(): List<MoneyTransfer> {
-        val transfers = listOf(
-            MoneyTransfer(employer, "salary", Rub(-50000.0), instant(1, 17)),
-            MoneyTransfer(shop, "food", Rub(700.0), instant(1, 17)),
-            MoneyTransfer(taxi, "travel", Rub(300.0), instant(2, 18)),
-            MoneyTransfer(shop, "food", Rub(700.0), instant(2, 19))
-        )
-        return transfers
-    }
-
-    private fun instant(month: Int, day: Int) = localDate(2018, month, day).toStartOfDayInstant(zoneId)
+    private fun testData(): List<Transfer> = listOf(
+        Transfer(LocalDateTime("2018-12-20T09:42"), employer, "salary", 10000),
+        Transfer(LocalDateTime("2018-12-20T10:00"), shop, "food", -700),
+        Transfer(LocalDateTime("2018-12-21T09:42"), taxi, "travel", -300),
+        Transfer(LocalDateTime("2018-12-22T09:42"), shop, "salary", -600)
+    )
 }
