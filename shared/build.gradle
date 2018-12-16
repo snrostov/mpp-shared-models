@@ -1,0 +1,95 @@
+plugins {
+    id 'kotlin-multiplatform'
+    id 'kotlinx-serialization'
+}
+
+repositories {
+    jcenter()
+    maven { url "http://dl.bintray.com/kotlin/ktor" }
+    maven { url "https://kotlin.bintray.com/kotlinx" }
+    maven { url "http://dl.bintray.com/kotlinx/kotlinx" }
+    maven { url "http://dl.bintray.com/kotlin/kotlin-js-wrappers" }
+    maven { url "https://kotlin.bintray.com/kotlin-dev" }
+    mavenCentral()
+}
+
+def ktor_version = '1.0.0'
+def logback_version = '1.2.3'
+
+kotlin {
+    targets {
+        fromPreset(presets.jvm, 'jvm')
+        fromPreset(presets.js, 'js') {
+            configure([compilations.main, compilations.test]) {
+                tasks.getByName(compileKotlinTaskName).kotlinOptions {
+                    sourceMap = true
+                    moduleKind = "commonjs"
+                    metaInfo = true
+                    sourceMapEmbedSources = "always"
+                }
+            }
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.9.0"
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test-common'
+                implementation 'org.jetbrains.kotlin:kotlin-test-annotations-common'
+            }
+        }
+        jvmMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+                implementation "io.ktor:ktor-server-jetty:$ktor_version"
+                implementation "io.ktor:ktor-html-builder:$ktor_version"
+                implementation "ch.qos.logback:logback-classic:$logback_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.9.0"
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test'
+                implementation 'org.jetbrains.kotlin:kotlin-test-junit'
+            }
+        }
+        jsMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-js'
+                implementation "org.jetbrains:kotlin-react-dom:16.4.1-pre.33-kotlin-1.2.50"
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.9.0"
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test-js'
+            }
+        }
+    }
+}
+
+def testLib = new File(project.buildDir, "../node_modules")
+def jsCompilations = kotlin.targets.js.compilations
+
+task populateWebFolder(dependsOn: [jsMainClasses]) {
+    doLast {
+        copy {
+            from jsCompilations.main.output
+            from kotlin.sourceSets.jsMain.resources.srcDirs
+            jsCompilations.test.runtimeDependencyFiles.each {
+                if (it.exists() && !it.isDirectory()) {
+                    from zipTree(it.absolutePath).matching { include '*.js' }
+                }
+            }
+            into testLib
+        }
+    }
+}
+
+tasks.getByName(BasePlugin.ASSEMBLE_TASK_NAME).dependsOn populateWebFolder
