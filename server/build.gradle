@@ -3,12 +3,24 @@ plugins {
 }
 
 repositories {
-    maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+    jcenter()
+    maven { url "http://dl.bintray.com/kotlin/ktor" }
+    maven { url "https://kotlin.bintray.com/kotlinx" }
+    maven { url "http://dl.bintray.com/kotlinx/kotlinx" }
+    maven { url "https://kotlin.bintray.com/kotlin-dev" }
+    maven { url "https://kotlin.bintray.com/kotlin-eap" }
     mavenCentral()
 }
 
+def ktor_version = '1.0.1'
+def logback_version = '1.2.3'
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.9.0"
+    implementation project(':shared')
 }
 
 compileKotlin {
@@ -16,4 +28,9 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+task run(type: JavaExec, dependsOn: [classes]) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = "sample.ServerKt"
 }

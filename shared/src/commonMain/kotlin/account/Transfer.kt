@@ -2,6 +2,7 @@ package account
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JSON
+import kotlinx.serialization.list
 import kotlin.js.JsName
 
 @Serializable
@@ -11,13 +12,10 @@ data class Transfer(
     val partner: String,
     val description: String,
     val amount: Int
-) {
-    fun toJson() = JSON.stringify(serializer(), this)
+)
 
-    companion object {
-        fun fromJson(json: String) = JSON.parse(serializer(), json)
-    }
-}
+@JsName("transfersToJson")
+fun List<Transfer>.toJson() = JSON.stringify(Transfer.serializer().list, this)
 
 @JsName("balance")
 fun List<Transfer>.balance() = sumBy { it.amount }

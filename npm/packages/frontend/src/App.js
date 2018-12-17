@@ -11,6 +11,8 @@ import Toolbar from "@material-ui/core/es/Toolbar/Toolbar";
 import IconButton from "@material-ui/core/es/IconButton/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
+import PublishIcon from '@material-ui/icons/Publish';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import Checkbox from "@material-ui/core/es/Checkbox/Checkbox";
 import TableBody from "@material-ui/core/es/TableBody/TableBody";
 import TextField from "@material-ui/core/es/TextField/TextField";
@@ -73,6 +75,8 @@ class Transfers extends Component {
                     />
                     <IconButton onClick={this.duplicate.bind(this, this.state.selected)}><AddIcon/></IconButton>
                     <IconButton onClick={this.delete.bind(this, this.state.selected)}><DeleteIcon/></IconButton>
+                    <IconButton onClick={this.post.bind(this)}><PublishIcon/></IconButton>
+                    <IconButton onClick={this.overallStats.bind(this)}><TrendingUpIcon/></IconButton>
                 </Toolbar>
             </Paper>,
             <Paper key="summary" style={{marginTop: 20, padding: 20}}>
@@ -135,6 +139,21 @@ class Transfers extends Component {
             console.log(value);
             return state
         })
+    }
+
+    post() {
+        fetch('http://127.0.0.1:8080', {
+            method: 'POST',
+            body: account.transfersToJson(this.kotlinList)
+        });
+    }
+
+    overallStats() {
+        fetch('http://127.0.0.1:8080')
+            .then(it => it.text())
+            .then(json => {
+                alert(json)
+            })
     }
 
     byAccount(items) {

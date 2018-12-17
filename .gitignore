@@ -1,6 +1,7 @@
 .idea/
 build/
 node_modules/
+local/
 
 /.pnp
 .pnp.js
