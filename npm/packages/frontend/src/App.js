@@ -31,8 +31,8 @@ class Transfers extends Component {
 
         this.state = {
             list: [
-                new account.Transfer(account.LocalDateTime_61zpoe$("2018-12-20T09:42"), "employer", "salary", 10000),
-                new account.Transfer(account.LocalDateTime_61zpoe$("2018-12-21T09:42"), "shop", "food", -700)
+                new account.Transfer(account.localDateTimeFromText("2018-12-20T09:42"), "employer", "salary", 10000),
+                new account.Transfer(account.localDateTimeFromText("2018-12-21T09:42"), "shop", "food", -700)
             ],
             selected: 0
         }
@@ -112,7 +112,7 @@ class Transfers extends Component {
 
     duplicate(i) {
         this.setState(state => {
-            let selected = state.list[i]
+            let selected = state.list[i];
             state.list.push(
                 new account.Transfer(
                     selected.time,
@@ -178,7 +178,7 @@ class TransferEditor extends Component {
     render() {
         return [
             this.field("Date", "time", {type: "datetime-local"},
-                value => account.LocalDateTime_61zpoe$(value)),
+                value => account.localDateTimeFromText(value)),
             this.field("Partner", "partner"),
             this.field("Description", "description"),
             this.field("Amount", "amount", {type: "number"},

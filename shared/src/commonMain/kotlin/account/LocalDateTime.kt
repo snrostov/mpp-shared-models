@@ -2,6 +2,7 @@ package account
 
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
+import kotlin.js.JsName
 
 expect fun LocalDateTime(text: String): LocalDateTime
 

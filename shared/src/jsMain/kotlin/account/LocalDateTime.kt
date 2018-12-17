@@ -1,5 +1,6 @@
 package account
 
+@JsName("localDateTimeFromText")
 actual fun LocalDateTime(text: String) = LocalDateTime(JSJoda.LocalDateTime.parse(text))
 
 actual class LocalDateTime(val js: JSJoda.LocalDateTime) {
